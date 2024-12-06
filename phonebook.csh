@@ -10,8 +10,8 @@ while (1)
     echo "5. Search for a record by last name"
     echo "6. Search for records by birthday (month or year)"
     echo "7. Exit"
+    echo "Choose an option: "
     set choice = $<
-    echo "Choose an option: $choice"
 
     switch ($choice)
         case 1:
@@ -41,7 +41,8 @@ while (1)
             if ( $query_length == 2 || $query_length == 1) then
                 awk -F ':' -v query="$query" '{ split($4, date_parts, "/"); month = date_parts[1]; if (month == query) { print $0; } }' "records.txt"
             else if ( $query_length == 4 ) then
-                set query = `echo $query | tail -c 3`
+                set last2query = `echo $query | tail -c 3`
+                awk -F ':' -v query="${last2query}" '{ split($4, date_parts, "/"); year = date_parts[3]; if (year == query) { print $0; } }' "records.txt"
                 awk -F ':' -v query="${query}" '{ split($4, date_parts, "/"); year = date_parts[3]; if (year == query) { print $0; } }' "records.txt"
             else
                 echo "Invalid query format. Please enter a 2-digit month or 4-digit year."

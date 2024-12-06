@@ -61,6 +61,16 @@ while true; do
                     }
                 }
                 ' "records.txt"
+            awk -F ':' -v query="${query}" '
+                {
+                    split($4, date_parts, "/");
+                    year = date_parts[3];
+                    if (year == query) {
+                        print $0;
+                    }
+                }
+                ' "records.txt"
+            
         else
             echo "Invalid query format. Please enter a 2-digit month or 4-digit year."
         fi
