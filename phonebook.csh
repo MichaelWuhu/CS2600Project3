@@ -1,5 +1,21 @@
 #!/bin/csh
 
+# Check if the correct number of arguments is provided
+if ($#argv != 1) then
+    echo "Error: Please specify the filename."
+    echo "Usage: $0 <filename>"
+    exit 1
+endif
+
+# Assign the input filename to a variable
+set filename = $argv[1]
+
+# Check if the file exists
+if (! -f "$filename") then
+    echo "File not found!"
+    exit 1
+endif
+
 # Main menu
 while (1)
     echo "Menu Options:"
@@ -15,21 +31,21 @@ while (1)
 
     switch ($choice)
         case 1:
-            sort -t ' ' -k1 "records.txt"
+            sort -t ' ' -k1 "$filename"
             breaksw
         case 2:
-            sort -t ' ' -k2 "records.txt"
+            sort -t ' ' -k2 "$filename"
             breaksw
         case 3:
-            sort -r -t ' ' -k1 "records.txt"
+            sort -r -t ' ' -k1 "$filename"
             breaksw
         case 4:
-            sort -r -t ' ' -k2 "records.txt"
+            sort -r -t ' ' -k2 "$filename"
             breaksw
         case 5:
             echo "Enter last name: "
             set last_name = $<
-            awk -F ':' -v lname="$last_name" '{ split($1, name_parts, " "); if (tolower(name_parts[2]) == tolower(lname)) { print $0; } }' "records.txt"
+            awk -F ':' -v lname="$last_name" '{ split($1, name_parts, " "); if (tolower(name_parts[2]) == tolower(lname)) { print $0; } }' "$filename"
             breaksw
         case 6:
             echo "Enter month or year to search for (e.g., MM or YYYY): "
@@ -39,11 +55,11 @@ while (1)
             set query_length = `expr length $query`
             # echo "query length: $query_length"
             if ( $query_length == 2 || $query_length == 1) then
-                awk -F ':' -v query="$query" '{ split($4, date_parts, "/"); month = date_parts[1]; if (month == query) { print $0; } }' "records.txt"
+                awk -F ':' -v query="$query" '{ split($4, date_parts, "/"); month = date_parts[1]; if (month == query) { print $0; } }' "$filename"
             else if ( $query_length == 4 ) then
                 set last2query = `echo $query | tail -c 3`
-                awk -F ':' -v query="${last2query}" '{ split($4, date_parts, "/"); year = date_parts[3]; if (year == query) { print $0; } }' "records.txt"
-                awk -F ':' -v query="${query}" '{ split($4, date_parts, "/"); year = date_parts[3]; if (year == query) { print $0; } }' "records.txt"
+                awk -F ':' -v query="${last2query}" '{ split($4, date_parts, "/"); year = date_parts[3]; if (year == query) { print $0; } }' "$filename"
+                awk -F ':' -v query="${query}" '{ split($4, date_parts, "/"); year = date_parts[3]; if (year == query) { print $0; } }' "$filename"
             else
                 echo "Invalid query format. Please enter a 2-digit month or 4-digit year."
             endif
