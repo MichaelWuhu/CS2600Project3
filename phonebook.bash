@@ -92,7 +92,7 @@ while true; do
         ;;
     7)
         echo "Exiting..."
-        break
+        exit
         ;;
     *)
         echo "Invalid option. Please try again."
